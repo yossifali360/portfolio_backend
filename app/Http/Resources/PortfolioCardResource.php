@@ -44,6 +44,14 @@ class PortfolioCardResource extends JsonResource
             return $image;
         }
 
+        // Stored relative path on the public disk (e.g. portfolio/xxx.png) — use API
+        // route so images work when /storage/... is blocked (403) on the host.
+        if (str_starts_with($image, 'portfolio/')) {
+            $filename = substr($image, strlen('portfolio/'));
+
+            return url('/api/portfolio-files/'.$filename);
+        }
+
         return url(Storage::disk('public')->url($image));
     }
 }
