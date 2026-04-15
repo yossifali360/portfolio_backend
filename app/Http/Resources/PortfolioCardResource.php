@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @mixin \App\Models\PortfolioCard
@@ -22,9 +23,27 @@ class PortfolioCardResource extends JsonResource
             'description' => $this->description,
             'tags' => $this->tags ?? [],
             'accentColor' => $this->accent_color,
-            'image' => $this->image,
+            'image' => $this->resolveImageUrl($this->image),
             'link' => $this->link,
             'links' => $this->links,
         ];
+    }
+
+    private function resolveImageUrl(?string $image): ?string
+    {
+        if ($image === null || $image === '') {
+            return null;
+        }
+        if (str_starts_with($image, 'http://') || str_starts_with($image, 'https://')) {
+            return $image;
+        }
+        if (str_starts_with($image, '/storage/')) {
+            return url($image);
+        }
+        if (str_starts_with($image, '/')) {
+            return $image;
+        }
+
+        return url(Storage::disk('public')->url($image));
     }
 }
