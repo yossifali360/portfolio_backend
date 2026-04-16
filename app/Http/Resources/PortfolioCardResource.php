@@ -29,6 +29,9 @@ class PortfolioCardResource extends JsonResource
         ];
     }
 
+    /**
+     * Full absolute URL in JSON (same response as card data) — no separate image route.
+     */
     private function resolveImageUrl(?string $image): ?string
     {
         if ($image === null || $image === '') {
@@ -37,19 +40,8 @@ class PortfolioCardResource extends JsonResource
         if (str_starts_with($image, 'http://') || str_starts_with($image, 'https://')) {
             return $image;
         }
-        if (str_starts_with($image, '/storage/')) {
-            return url($image);
-        }
         if (str_starts_with($image, '/')) {
-            return $image;
-        }
-
-        // Stored relative path on the public disk (e.g. portfolio/xxx.png) — use API
-        // route so images work when /storage/... is blocked (403) on the host.
-        if (str_starts_with($image, 'portfolio/')) {
-            $filename = substr($image, strlen('portfolio/'));
-
-            return url('/api/portfolio-files/'.$filename);
+            return url($image);
         }
 
         return url(Storage::disk('public')->url($image));
