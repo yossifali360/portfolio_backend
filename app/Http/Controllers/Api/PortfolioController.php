@@ -92,7 +92,7 @@ class PortfolioController extends Controller
         /** @var array<string, mixed> $data */
         $data = $request->validate([
             'title' => $optional.'required|string|max:255',
-            'subtitle' => $optional.'required|string|max:255',
+            'subtitle' => $optional.'nullable|string|max:255',
             'description' => $optional.'required|string',
             'tags' => $optional.'required|array',
             'tags.*' => 'string|max:100',
@@ -124,7 +124,7 @@ class PortfolioController extends Controller
 
         $rules = [
             'title' => $optional.'required|string|max:255',
-            'subtitle' => $optional.'required|string|max:255',
+            'subtitle' => $optional.'nullable|string|max:255',
             'description' => $optional.'required|string',
             'accentColor' => $optional.'required|string|max:32',
             'link' => 'nullable|string|max:2048',
